@@ -15,8 +15,10 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddDbContext<QtkdDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IContractRepository, ContractRepository>();
+builder.Services.AddScoped<IPriceListRepository, PriceListRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IContractService, ContractService>();
+builder.Services.AddScoped<IPriceListService, PriceListService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
