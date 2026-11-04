@@ -1,11 +1,56 @@
 @host = http://localhost:5000
+@customerId = 3
+@contractId = 2
 
-GET {{host}}/api/customers
+### 1. Tạo Customer
+POST {{host}}/api/customers
+Content-Type: application/json
 
-###
+{
+  "name": "Công ty Demo Tuần 06",
+  "status": "Active"
+}
 
-GET {{host}}/api/contracts/1
+### 2. Tạo Contract Draft còn thiếu nội dung và tệp
+POST {{host}}/api/contracts
+Content-Type: application/json
 
-###
+{
+  "contractNo": "HD-DEMO-06",
+  "customerId": {{customerId}},
+  "startDate": "2026-11-01",
+  "endDate": "2027-10-31",
+  "content": "",
+  "documentName": ""
+}
 
-GET {{host}}/api/contracts/999
+### 3. Submit thiếu dữ liệu - mong đợi 400
+POST {{host}}/api/contracts/{{contractId}}/submit
+
+### 4. Bổ sung dữ liệu Contract - mong đợi 200
+PUT {{host}}/api/contracts/{{contractId}}
+Content-Type: application/json
+
+{
+  "contractNo": "HD-DEMO-06",
+  "customerId": {{customerId}},
+  "startDate": "2026-11-01",
+  "endDate": "2027-10-31",
+  "content": "Nội dung hợp đồng demo đã hoàn thiện",
+  "documentName": "hop-dong-demo.pdf"
+}
+
+### 5. Submit hợp lệ - mong đợi 200 và PendingApproval
+POST {{host}}/api/contracts/{{contractId}}/submit
+
+### 6. Submit lần hai - mong đợi 409
+POST {{host}}/api/contracts/{{contractId}}/submit
+
+### 7. Xem trạng thái Contract
+GET {{host}}/api/contracts/{{contractId}}
+
+### Xem dữ liệu Pricing mẫu
+GET {{host}}/api/price-lists
+
+### Xem PriceItem mẫu
+GET {{host}}/api/price-lists/1/items

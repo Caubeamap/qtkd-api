@@ -1,54 +1,50 @@
-# QTKD — Tuần 05
+# QTKD - Tuần 06
 
-Web API .NET 10 dùng Entity Framework Core và PostgreSQL để đọc Customer và Contract.
+Web API .NET 10 dùng Entity Framework Core và PostgreSQL để quản lý Customer, Contract, PriceList/PriceItem và gửi hợp đồng trình duyệt.
 
 ## Yêu cầu
 
-- .NET SDK 10 và PostgreSQL đang chạy (mặc định `localhost:5432`).
-- Tài khoản PostgreSQL có quyền tạo database/bảng; có thể dùng pgAdmin hoặc `psql`.
-- EF Core CLI 10.0.12: nếu chưa có, chạy `dotnet tool install --global dotnet-ef --version 10.0.12`.
+- .NET SDK 10 và PostgreSQL đang chạy tại `localhost:5432`.
+- EF Core CLI 10.0.12. Nếu chưa có, chạy `dotnet tool install --global dotnet-ef --version 10.0.12`.
 
-Sau khi clone repository, mở terminal tại thư mục chứa `QTKD.sln`. Các lệnh dưới đây dùng PowerShell.
+Sau khi clone repository, mở terminal tại thư mục chứa `QTKD.sln`.
 
-## Tạo database và cấu hình
+## Cấu hình database
 
-Trong Query Tool của pgAdmin (kết nối database `postgres`) hoặc `psql`, chạy theo yêu cầu bài:
+Tạo database `qtkd_db` trong pgAdmin hoặc `psql` nếu database chưa tồn tại:
 
 ```sql
 CREATE DATABASE qtkd_db;
 ```
 
-Nếu database đã tồn tại thì bỏ qua bước tạo. EF Core `database update` cũng có thể tạo database khi tài khoản đủ quyền; hướng dẫn này tạo `qtkd_db` trước.
-
-Project đã có `UserSecretsId`. Lưu connection string bằng User Secrets, thay các placeholder bằng thông tin PostgreSQL của bạn:
+Lưu connection string bằng User Secrets, thay thông tin PostgreSQL của bạn vào các placeholder:
 
 ```powershell
 dotnet user-secrets set "ConnectionStrings:QtkdDatabase" "Host=localhost;Port=5432;Database=qtkd_db;Username=<POSTGRES_USER>;Password=<POSTGRES_PASSWORD>" --project src/QTKD.Api
 ```
 
-Không ghi mật khẩu thật vào source hoặc Git. User Secrets dùng cho môi trường Development; khi triển khai có thể cung cấp biến môi trường `ConnectionStrings__QtkdDatabase`.
+Không ghi mật khẩu thật vào source hoặc Git.
 
-## Áp dụng migration và chạy
-
-Migration `InitialCreate` đã có trong source, gồm bốn bảng và dữ liệu mẫu. Không cần tạo lại migration khi clone:
+## Chạy migration và API
 
 ```powershell
 $env:ASPNETCORE_ENVIRONMENT = 'Development'
 dotnet restore QTKD.sln
 dotnet ef database update --project src/QTKD.Api
-dotnet build QTKD.sln
 dotnet run --project src/QTKD.Api --launch-profile http
 ```
 
-Mở Swagger: <http://localhost:5000/swagger>. Swagger được bật trong Development. Dừng API bằng `Ctrl+C`.
+Mở Swagger tại <http://localhost:5000/swagger>. Dừng API bằng `Ctrl+C`.
 
-## Thử API
+## Phạm vi Tuần 06
 
-Tuần 05 có đúng hai endpoint:
+- Customer: tạo, xem danh sách/chi tiết và cập nhật.
+- Contract: tạo ở trạng thái `Draft`, xem chi tiết, cập nhật và gửi trình duyệt.
+- Pricing: tạo/xem PriceList, thêm/xem PriceItem.
+- Submit Contract: kiểm tra CTR-01, CTR-02 và CTR-03 trước khi lưu.
 
-| Endpoint | Kết quả |
-| --- | --- |
-| `GET /api/customers` | `200`: hai Customer ID 1 (`Công ty Minh Phát`) và ID 2 (`Công ty Đại Dương`), trạng thái `Active`, sắp xếp theo ID. |
-| `GET /api/contracts/{id}` | ID `1` trả `200`: `HD-2026-018`, CustomerId `1`, từ `2026-10-01` đến `2027-09-30`, trạng thái `Draft`. ID `999` trả `404`. |
+Danh sách endpoint, request/response mẫu, giả định demo và bảng đối chiếu quy tắc nằm trong [docs/week06-api.md](docs/week06-api.md). Có thể chạy lần lượt các request trong `src/QTKD.Api/QTKD.Api.http` để demo luồng thất bại và thành công.
 
-Dùng Swagger **Try it out** hoặc ba request trong `src/QTKD.Api/QTKD.Api.http`. Dữ liệu được truy vấn từ PostgreSQL. Sơ đồ thành phần và mô hình dữ liệu nằm trong [docs/architecture.md](docs/architecture.md).
+## Giới hạn phiên bản
+
+Tuần 06 chưa xây dựng Authentication, Approval workflow đầy đủ, Payment, giao diện web hoặc test project. Submit được mô phỏng bằng chuyển trạng thái `Draft` sang `PendingApproval`; gửi lặp sau đó bị từ chối và không tạo thêm dữ liệu xử lý.
