@@ -46,7 +46,9 @@ public class QtkdDbContext : DbContext
             CustomerId = 1,
             StartDate = new DateOnly(2026, 10, 1),
             EndDate = new DateOnly(2027, 9, 30),
-            Status = "Draft"
+            Status = Contract.DraftStatus,
+            Content = string.Empty,
+            DocumentName = string.Empty
         });
 
         modelBuilder.Entity<PriceList>().HasData(new
