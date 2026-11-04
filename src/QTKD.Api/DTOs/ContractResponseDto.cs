@@ -8,4 +8,6 @@ public class ContractResponseDto
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
     public string Status { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public string DocumentName { get; set; } = string.Empty;
 }

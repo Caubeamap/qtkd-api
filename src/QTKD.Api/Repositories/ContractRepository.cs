@@ -13,10 +13,28 @@ public class ContractRepository : IContractRepository
         _dbContext = dbContext;
     }
 
-    public Task<Contract?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public Task<Contract?> GetByIdAsync(int id, bool trackChanges, CancellationToken cancellationToken)
     {
-        return _dbContext.Contracts
-            .AsNoTracking()
+        var query = _dbContext.Contracts
+            .Include(contract => contract.Customer)
+            .AsQueryable();
+
+        if (!trackChanges)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return query
             .FirstOrDefaultAsync(contract => contract.Id == id, cancellationToken);
+    }
+
+    public async Task AddAsync(Contract contract, CancellationToken cancellationToken)
+    {
+        await _dbContext.Contracts.AddAsync(contract, cancellationToken);
+    }
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

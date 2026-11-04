@@ -20,4 +20,20 @@ public class CustomerRepository : ICustomerRepository
             .OrderBy(customer => customer.Id)
             .ToListAsync(cancellationToken);
     }
+
+    public Task<Customer?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return _dbContext.Customers
+            .FirstOrDefaultAsync(customer => customer.Id == id, cancellationToken);
+    }
+
+    public async Task AddAsync(Customer customer, CancellationToken cancellationToken)
+    {
+        await _dbContext.Customers.AddAsync(customer, cancellationToken);
+    }
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        return _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }
