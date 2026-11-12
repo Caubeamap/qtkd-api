@@ -48,6 +48,8 @@ Content-Type: application/json
 
 Phản hồi `201 Created` luôn có status `Draft`. Customer phải tồn tại và `Active`; ngày bắt đầu không được sau ngày kết thúc.
 
+Cập nhật Tuần 07: payload tạo/cập nhật Contract chỉ nhận các trường khai báo trong `ContractRequestDto`. Nếu gửi thêm `status` (ví dụ `"status": "Approved"`), API trả `400 Bad Request` với `errors` ngay khi đọc JSON, trước khi gọi service. PUT bị từ chối không thay đổi các trường của Contract. Xem minh chứng TC07 trong [week07-testing.md](week07-testing.md).
+
 Tạo PriceItem:
 
 ```http

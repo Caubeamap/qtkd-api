@@ -2,6 +2,9 @@
 @customerId = 3
 @contractId = 2
 
+# Sau request 1, cập nhật @customerId theo id trong response trước khi chạy request 2.
+# Sau request 2, cập nhật @contractId theo id trong response trước khi chạy các request tiếp theo.
+
 ### 1. Tạo Customer
 POST {{host}}/api/customers
 Content-Type: application/json
