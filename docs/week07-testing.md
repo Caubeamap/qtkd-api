@@ -51,7 +51,7 @@ Lần chạy hồi quy trước sửa ghi 1/1 FAIL: `Expected: BadRequest; Actua
 
 Sửa tối thiểu tại `ContractRequestDto`: thêm `[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]`. Payload chứa trường ngoài DTO bị từ chối trước service. Sau sửa, TC07 trả 400 và giữ nguyên mọi trường; Unit kiểm tra biên serializer và Integration kiểm tra HTTP/DB đều PASS.
 
-Commit sửa lỗi: `<điền hash commit sửa ContractRequestDto + test TC07>`.
+Commit sửa lỗi: `d0d493d6e75b3512ac387a27db9a95e69c68cab7`.
 
 ## Database và giới hạn minh chứng
 
